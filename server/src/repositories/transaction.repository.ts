@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Transaction } from "src/entities/transaction.entity";
-import { Repository } from "typeorm"
+import { In, Repository } from "typeorm"
 
 
 @Injectable()
@@ -31,6 +31,25 @@ export class TransactionRepository {
   
   async remove(id: number): Promise<void> {
     await this.repository.delete(id);
+  }
+
+  async getTotalTransactionsByAccountId(accountId: number): Promise<number> {
+    const result = await this.repository
+      .createQueryBuilder("transaction")
+      .select("SUM(transaction.amount)", "total")
+      .where("transaction.accountId = :accountId", { accountId })
+      .getRawOne();
+    return result.total || 0;
+  }
+
+  async getTransactionsByAccountIds(accountIds: number[]): Promise<Transaction[]> {
+    return this.repository.find({
+      relations: { account: true },
+      where: {
+          account: { id: In(accountIds) },
+      },
+      order: { date: 'ASC' },
+    })
   }
 
 }

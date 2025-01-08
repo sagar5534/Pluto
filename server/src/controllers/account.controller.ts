@@ -11,6 +11,11 @@ export class AccountController {
     return this.service.getAll();
   }
 
+  @Get('/timeline')
+  getAllAccountTimeline(): Promise<AccountResponseDto[]> {
+    return this.service.getMonthlyBalances();
+  }
+
   @Post()
   createAccount(@Body() accountData: CreateAccountDto): Promise<AccountResponseDto> {
     return this.service.create(accountData);

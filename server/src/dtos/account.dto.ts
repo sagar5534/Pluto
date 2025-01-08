@@ -8,6 +8,7 @@ export class AccountResponseDto {
   name!: string;
   type!: AccountType;
   isActive!: boolean;
+  currentBalance?: number;
 }
 
 export class CreateAccountDto {
